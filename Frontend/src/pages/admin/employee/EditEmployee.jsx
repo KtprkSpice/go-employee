@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { AlertError, AlertSuccess } from "../../../components/Alert";
 
 function EditEmployee() {
     const { id } = useParams();
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
         fullname: "",
         email: "",
@@ -14,11 +15,9 @@ function EditEmployee() {
     // ambil data employee by id
     useEffect(() => {
         const fetchEmployee = async () => {
+            setLoading(true);
             try {
-                const res = await fetch(
-                    `http://localhost:8080/employee?id=${id}`
-                );
-
+                const res = await fetch(`http://localhost:8080/employee?id=${id}`);
                 const data = await res.json();
 
                 if (!res.ok) {
@@ -30,14 +29,15 @@ function EditEmployee() {
                     email: data.email,
                     phone: data.phone,
                 });
-
             } catch (err) {
-                console.log(err.message);
+                AlertError(err.message);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchEmployee();
-    }, 1000[id]);
+    }, [id]);
 
     // handle input
     const handleChange = (e) => {
@@ -65,12 +65,16 @@ function EditEmployee() {
         const data = await res.json();
 
         if (res.ok) {
-            alert(data.message);
+            AlertSuccess(data.message);
             navigate("/admin/employee");
         } else {
-            alert("Gagal update");
+            AlertError("Gagal update");
         }
     };
+    if (loading) {
+        return <div className="p-6">Loading...</div>;
+    }
+
 
     return (
         <div className="p-6 max-w-xl mx-auto">
@@ -108,7 +112,7 @@ function EditEmployee() {
 
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white px-4 py-2"
+                    className="bg-blue-500 text-white px-4 py-2 cursor-pointer"
                 >
                     Update
                 </button>

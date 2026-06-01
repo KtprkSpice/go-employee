@@ -59,6 +59,7 @@ func CreateEmployee(db *sql.DB) http.HandlerFunc {
 	}
 }
 
+// GetById
 func GetEmployeeById(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -84,6 +85,7 @@ json.NewEncoder(w).Encode(map[string]string{
 	}
 }
 
+// Update
 func UpdateEmployee(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		
@@ -123,6 +125,48 @@ func UpdateEmployee(db *sql.DB) http.HandlerFunc {
 
 		json.NewEncoder(w).Encode(map[string]string {
 			"message" : "Employee updated Successfuly",
+		})
+	}
+}
+
+// Delete
+func DeleteEmployee(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPut {
+			http.Error(w, "Method note allowed", http.StatusMethodNotAllowed)
+			return 
+		}
+		idStr := r.URL.Query().Get("id")
+
+		id,err := strconv.Atoi(idStr)
+
+		if err != nil {
+			http.Error(w, "Invalid Id", http.StatusBadRequest)
+			return 
+		}
+
+		var emp models.Employee
+
+		err = json.NewDecoder(r.Body).Decode(&emp)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return 
+		}
+
+		err = repository.DeleteEmployee(
+			db,
+			id,
+			emp,
+		)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return 
+		}
+
+		json.NewEncoder(w).Encode(map[string]string {
+			"message" : "Employee Deleted Successfuly",
 		})
 	}
 }

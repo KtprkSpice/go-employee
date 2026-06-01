@@ -100,3 +100,26 @@ func EditEmployee(db *sql.DB, id int, emp models.Employee) error {
 	
 	return  err
 }
+
+func DeleteEmployee(db *sql.DB, id int, emp models.Employee) error {
+	now := time.Now()
+
+	q := `
+	UPDATE employee
+	SET
+		deleted_at = ?
+	WHERE id = ?
+	`
+
+	_, err := db.Exec(
+		q,
+		now,
+		id,
+	)
+
+	if err != nil {
+		return  err
+	}
+
+	return  nil
+}

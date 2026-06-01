@@ -1,91 +1,197 @@
-import $ from 'jquery'
-import DataTable from 'datatables.net-dt';
-import 'datatables.net-dt/css/dataTables.dataTables.css';
-import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router';
-import { AlertSuccess } from '../../../components/Alert';
-import { Pen, Trash } from "@boxicons/react"
+import { useEffect, useMemo, useState } from 'react';
+import {
+    useReactTable,
+    getCoreRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    getFilteredRowModel,
+    flexRender,
+} from '@tanstack/react-table';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { AlertConfirm, AlertError, AlertSuccess } from '../../../components/Alert';
 
-function dashboardEmployee() {
-
+function DashboardEmployee() {
     const [employees, setEmployees] = useState([]);
+    const [globalFilter, setGlobalFilter] = useState('');
     const location = useLocation();
     const navigate = useNavigate();
-    const { id } = useParams();
 
     useEffect(() => {
         fetch('http://localhost:8080/employees')
             .then(res => res.json())
-            .then(data => setEmployees(data))
-    }, [])
+            .then(data => setEmployees(data));
+    }, 100);
 
-    useEffect(() => {
-        if (employees.length > 0) {
-            const table = $('#listKaryawan').DataTable();
+    const fetchEmployees = () => {
+        fetch('http://localhost:8080/employees')
+            .then(res => res.json())
+            .then(data => setEmployees(data));
+    };
 
-            return () => {
-                table.destroy();
+    const deleteEmployee = async (id) => {
+        try {
+            const response = await fetch(
+                `http://localhost:8080/employee/delete?id=${id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({})
+                }
+            )
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw Error(data.message || "Failed to delete employee");
             }
+
+
+            AlertSuccess(data.message);
+            fetchEmployees();
+        } catch (error) {
+            AlertError(error);
         }
+    }
 
-    }, [employees]);
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'no',
+                header: 'No',
+                cell: ({ row }) => row.index + 1,
+            },
+            {
+                accessorKey: 'fullname',
+                header: 'Employee Name',
+            },
+            {
+                accessorKey: 'email',
+                header: 'Email',
+            },
+            {
+                accessorKey: 'phone',
+                header: 'Phone',
+            },
+            {
+                id: 'actions',
+                header: 'Aksi',
+                cell: ({ row }) => (
+                    <div className="flex gap-2 *:cursor-pointer">
+                        <button
+                            onClick={() => navigate(`/admin/employee/edit/${row.original.id}`)}
+                            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onClick={() => deleteEmployee(row.original.id)}
+                            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                ),
+            },
+        ],
+        [navigate]
+    );
 
-    useEffect(() => {
-        if (location.state?.successMessage) {
-            AlertSuccess(location.state.successMessage)
+    const table = useReactTable({
+        data: employees,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        state: {
+            globalFilter,
+        },
+        onGlobalFilterChange: setGlobalFilter,
+    });
 
-            navigate(location.pathname, {
-                replace: true,
-                state: {}
-            })
-        }
-    }, [location, navigate]);
+    return (
+        <div className="p-6">
+            <h1 className="text-2xl font-bold mb-4">Employees</h1>
 
+            <div className="mb-4 flex justify-between">
+                <Link
+                    to="/admin/employee/create"
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                    Create Employee
+                </Link>
 
+                <input
+                    type="text"
+                    value={globalFilter}
+                    onChange={(e) => setGlobalFilter(e.target.value)}
+                    placeholder="Search..."
+                    className="px-3 py-2 border rounded"
+                />
+            </div>
 
-    return <>
-        <h1 className="text-2xl font-bold mb-10">Employees</h1>
-        <div className="mb-10">
-            <Link to={'/admin/employee/create'} className="px-5 py-2 bg-blue-500 text-white rounded-lg">Create Employee</Link>
+            <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border">
+                    <thead className="bg-gray-100">
+                        {table.getHeaderGroups().map(headerGroup => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map(header => (
+                                    <th key={header.id} className="px-4 py-2 text-left border">
+                                        {header.isPlaceholder ? null : (
+                                            <div
+                                                onClick={header.column.getToggleSortingHandler()}
+                                                className="cursor-pointer select-none"
+                                            >
+                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                                {{
+                                                    asc: ' 🔼',
+                                                    desc: ' 🔽',
+                                                }[header.column.getIsSorted()] ?? null}
+                                            </div>
+                                        )}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                    </thead>
+                    <tbody>
+                        {table.getRowModel().rows.map(row => (
+                            <tr key={row.id} className="hover:bg-gray-50">
+                                {row.getVisibleCells().map(cell => (
+                                    <td key={cell.id} className="px-4 py-2 border">
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex gap-2 mt-4 justify-center">
+                <button
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                    Previous
+                </button>
+                <span className="px-3 py-1">
+                    Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                </span>
+                <button
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                    Next
+                </button>
+            </div>
         </div>
-        <table id="listKaryawan" className="display">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Employee Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {employees.map((emp, index) => (
-                    <tr key={emp.id}>
-                        <td>{index + 1}</td>
-                        <td>{emp.fullname}</td>
-                        <td>{emp.email}</td>
-                        <td>{emp.phone}</td>
-                        <td>
-                            <button
-                                onClick={() => {
-                                    if ($.fn.DataTable.isDataTable('#listKaryawan')) {
-                                        $('#listKaryawan').DataTable().destroy(true);
-                                    }
-
-                                    setTimeout(() => {
-                                        navigate(`/admin/employee/edit/${emp.id}`);
-                                    }, 100);
-                                }}
-                            >
-                                Edit
-                            </button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-
-    </>
+    );
 }
 
-export default dashboardEmployee;
+export default DashboardEmployee

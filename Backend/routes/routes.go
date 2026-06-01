@@ -26,4 +26,9 @@ func SetupRoutes(db *sql.DB) {
 		"/employee", 
 		handlers.GetEmployeeById(db),
 	)
+
+	http.HandleFunc(
+		"/employee/delete",
+		handlers.DeleteEmployee(db),
+	)
 }
