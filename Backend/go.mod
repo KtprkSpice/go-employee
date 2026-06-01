@@ -1,4 +1,4 @@
-module employee-api
+module ems-api
 
 go 1.26.3
 
