@@ -7,6 +7,9 @@ import DashboardEmployee from './pages/admin/employee/dashboardEmployee.jsx'
 import AdminLayout from './pages/layouts/admin.jsx'
 import CreateEmployee from './pages/admin/employee/CreateEmployee.jsx'
 import EditEmployee from './pages/admin/employee/EditEmployee.jsx'
+import DashboardDivision from './pages/admin/division/DashboardDivision.jsx'
+import CreateDivision from './pages/admin/division/CreateDivision.jsx'
+import EditDivision from './pages/admin/division/EditDivsion.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +20,9 @@ createRoot(document.getElementById('root')).render(
           <Route element={<DashboardEmployee />} path='/admin/employee' />
           <Route element={<CreateEmployee />} path='/admin/employee/create' />
           <Route element={<EditEmployee />} path='/admin/employee/edit/:id' />
+          <Route element={<DashboardDivision />} path='/admin/divisions' />
+          <Route element={<CreateDivision />} path='/admin/division/create' />
+          <Route element={<EditDivision />} path='/admin/division/edit/:id' />
         </Route>
       </Routes>
     </BrowserRouter>

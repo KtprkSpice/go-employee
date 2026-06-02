@@ -1,5 +1,5 @@
 
-import { ArrowFromLeft, ArrowOutRightCircleHalf, Background, Book, Community, Home } from "@boxicons/react"
+import { ArrowFromLeft, ArrowOutRightCircleHalf, Background, Book, Business, Community, Home } from "@boxicons/react"
 import { Link, Outlet } from "react-router"
 
 function AdminLayout() {
@@ -16,21 +16,22 @@ function AdminLayout() {
             <div>
                 <ul>
                     <li>
-                        <Link to={'/admin/employee'} className="p-5 border-b border-black  text-white flex gap-2 items-center">
+                        <a href="#" className="p-5 border-b border-black  text-white flex gap-2 items-center">
                             <Home />
                             <span>Dashboard</span>
-                        </Link>
+                        </a>
                     </li>
                     <li>
-                        <a href="#" className="p-5 border-b border-black  text-white flex gap-2 items-center">
+                        <Link to={"/admin/employee"} className="p-5 border-b border-black  text-white flex gap-2 items-center">
                             <Community />
                             <span>Data Karyawan</span>
-                        </a>
+                        </Link >
                     </li>
                     <li>
-                        <a href="#" className="p-5 border-b border-black  text-white flex gap-2 items-center">
-                            <span>Data Kategori</span>
-                        </a>
+                        <Link to={'/admin/divisions'} href="#" className="p-5 border-b border-black  text-white flex gap-2 items-center">
+                            <Business />
+                            <span>Divisions</span>
+                        </Link>
                     </li>
                     <li>
                         <a href="#" className="p-5 border-b border-black  text-white flex gap-2 items-center">

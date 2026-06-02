@@ -29,6 +29,8 @@ func GetEmployee(db *sql.DB) ([]models.Employee, error) {
 			&emp.Name,
 			&emp.Email,
 			&emp.Phone,
+			&emp.PositionId,
+			&emp.DivisionId,
 			&emp.CreatedAt,
 			&emp.UpdatedAt,
 			&emp.DeletedAt,
@@ -44,15 +46,17 @@ func CreateEmployee(db *sql.DB, emp models.Employee) error {
 	now := time.Now()
 	q := `
 	INSERT INTO employee 
-	(fullname,email,phone,created_at,updated_at)
+	(fullname,email,phone,position_id,division_id,created_at,updated_at)
 	VALUES 
-	(?,?,?,?,?)`
+	(?,?,?,?,?,?,?)`
 
 	_, err := db.Exec(
 		q,
 		emp.Name,
 		emp.Email,
 		emp.Phone,
+		emp.PositionId,
+		emp.DivisionId,
 		now,
 		now,
 	)

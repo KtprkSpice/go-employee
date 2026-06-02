@@ -17,11 +17,11 @@ func main() {
 
 	defer db.Close()
 
-	routes.SetupRoutes(db)
+	mux := routes.SetupRoutes(db)
 
 	fmt.Println("Server running on port 8080")
 
-	handler := middleware.EnableCors(http.DefaultServeMux)
+	handler := middleware.EnableCors(mux)
 
 	http.ListenAndServe(":8080", handler)
 }

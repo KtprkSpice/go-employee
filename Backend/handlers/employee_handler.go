@@ -68,8 +68,8 @@ func GetEmployeeById(db *sql.DB) http.HandlerFunc {
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-json.NewEncoder(w).Encode(map[string]string{
-    "error": "Invalid Id",
+			json.NewEncoder(w).Encode(map[string]string{
+    		"error": "Invalid Id",
 })
 			return 
 		}
