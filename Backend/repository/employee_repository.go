@@ -27,8 +27,8 @@ func GetEmployee(db *sql.DB) ([]models.Employee, error) {
 		rows.Scan(
 			&emp.ID,
 			&emp.Name,
-			&emp.Email,
 			&emp.Phone,
+			&emp.Email,
 			&emp.PositionId,
 			&emp.DivisionId,
 			&emp.CreatedAt,

@@ -1,5 +1,5 @@
 
-import { ArrowFromLeft, ArrowOutRightCircleHalf, Background, Book, Business, Community, Home } from "@boxicons/react"
+import { ArrowFromLeft, ArrowOutRightCircleHalf, Background, Book, Business, Community, Home, UserIdCard } from "@boxicons/react"
 import { Link, Outlet } from "react-router"
 
 function AdminLayout() {
@@ -34,9 +34,10 @@ function AdminLayout() {
                         </Link>
                     </li>
                     <li>
-                        <a href="#" className="p-5 border-b border-black  text-white flex gap-2 items-center">
-                            <span>Data Users</span>
-                        </a>
+                        <Link to={'/admin/positions'} className="p-5 border-b border-black  text-white flex gap-2 items-center">
+                            <UserIdCard />
+                            <span>Positions</span>
+                        </Link>
                     </li>
                 </ul>
             </div>

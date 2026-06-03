@@ -9,6 +9,7 @@ import (
 func ConnectDB() (*sql.DB, error) {
 	return  sql.Open(
 		"mysql",
-		"root:@tcp(localhost:3306)/ems",
+		// Harus parseTime agar time di model terbaca
+		"root:@tcp(localhost:3306)/ems?parseTime=true",
 	)
 }
