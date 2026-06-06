@@ -14,7 +14,7 @@ import { AlertConfirm, AlertError, AlertSuccess } from '../../../components/Aler
 function DashboardPosition() {
     const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState('');
-    const [division, setDivision] = useState([]);
+    const [position, setPosition] = useState([]);
     const location = useLocation();
 
     useEffect(() => {
@@ -29,16 +29,16 @@ function DashboardPosition() {
     useEffect(() => {
         fetch('http://localhost:8080/positions')
             .then(res => res.json())
-            .then(data => setDivision(data));
+            .then(data => setPosition(data));
     }, []);
 
     const fetchPositions = () => {
         fetch('http://localhost:8080/positions')
             .then(res => res.json())
-            .then(data => setDivision(data));
+            .then(data => setPosition(data));
     };
 
-    const deleteDivision = async (id) => {
+    const deletePosition = async (id) => {
         try {
             const result = await AlertConfirm("Yakin ingin menghapus data ini?")
 
@@ -47,7 +47,7 @@ function DashboardPosition() {
             }
 
             const response = await fetch(
-                `http://localhost:8080/division/delete?id=${id}`,
+                `http://localhost:8080/position/delete?id=${id}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -95,13 +95,13 @@ function DashboardPosition() {
                 cell: ({ row }) => (
                     <div className="flex gap-2 *:cursor-pointer">
                         <button
-                            onClick={() => navigate(`/admin/division/edit/${row.original.id}`)}
+                            onClick={() => navigate(`/admin/position/edit/${row.original.id}`)}
                             className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                         >
                             <Pen />
                         </button>
                         <button
-                            onClick={() => deleteDivision(row.original.id)}
+                            onClick={() => deletePosition(row.original.id)}
                             className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                         >
                             <Trash />
@@ -116,7 +116,7 @@ function DashboardPosition() {
 
 
     const table = useReactTable({
-        data: division,
+        data: position,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),

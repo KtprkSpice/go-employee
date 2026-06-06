@@ -37,3 +37,15 @@ export const AlertConfirm = (message) => {
         cancelButtonText: "Batal"
     })
 }
+
+export const AlertLoading = (message) => {
+    return Swal.fire({
+        title: "Please Wait!",
+        text: message,
+        allowOutsideClick: false,
+        timer: 1000,
+        didOpen: () => {
+            Swal.showLoading();
+        },
+    });
+};

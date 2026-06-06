@@ -119,6 +119,26 @@ func UpdatePosition(db *sql.DB, id int, pst models.Position) error {
 		pst.Description,
 		pst.DivisionId,
 		now,
+		id,
+	)
+
+	return  err
+}
+
+func DeletePosition(db *sql.DB, id int, pst models.Position) error {
+	q := `
+	UPDATE positions
+	SET 
+		deleted_at = ?
+	WHERE id = ?
+	`
+
+	now := time.Now()
+
+	_,err := db.Exec(
+		q,
+		now,
+		id,
 	)
 
 	return  err

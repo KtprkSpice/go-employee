@@ -88,9 +88,16 @@ func SetupRoutes(db *sql.DB) *http.ServeMux {
 		handlers.GetPositionById(db),
 	)
 
+	// Update
 	mux.HandleFunc(
 		"/position/update",
 		handlers.UpdatePosition(db),
+	)
+
+	// delete
+	mux.HandleFunc(
+		"/position/delete",
+		handlers.DeletedPosition(db),
 	)
 
 	return mux

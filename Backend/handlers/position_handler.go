@@ -117,3 +117,43 @@ func UpdatePosition (db *sql.DB) http.HandlerFunc {
 		})
 	}
 }
+
+func DeletedPosition (db *sql.DB) http.HandlerFunc {
+	return  func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPut {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return 
+		}
+
+		idStr := r.URL.Query().Get("id")
+
+		id, err := strconv.Atoi(idStr)
+
+		if err != nil {
+			http.Error(w, "Invalid id", http.StatusBadRequest)
+			return 
+		}
+
+		var pst models.Position
+
+		err = json.NewDecoder(r.Body).Decode(&pst)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return 
+		}
+
+		err = repository.DeletePosition(db, id, pst)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return 
+		}
+
+		json.NewEncoder(w).Encode(map[string]string {
+			"message" : "Delted Successfuly",
+		})
+
+
+	}
+}

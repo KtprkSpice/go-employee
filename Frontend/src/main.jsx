@@ -12,6 +12,7 @@ import CreateDivision from './pages/admin/division/CreateDivision.jsx'
 import EditDivision from './pages/admin/division/EditDivsion.jsx'
 import DashboardPosition from './pages/admin/position/DashboardPosition.jsx'
 import CreatePosition from './pages/admin/position/CreatePosition.jsx'
+import EditPosition from './pages/admin/position/EditPosition.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -30,6 +31,7 @@ createRoot(document.getElementById('root')).render(
           {/* Postions */}
           <Route element={<DashboardPosition />} path='/admin/positions' />
           <Route element={<CreatePosition />} path='/admin/position/create' />
+          <Route element={<EditPosition />} path='/admin/position/edit/:id' />
         </Route>
       </Routes>
     </BrowserRouter>
