@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')).render(
         {/* Layout admin */}
         <Route element={<AdminLayout />} path='/admin'>
           {/* Employee */}
-          <Route element={<DashboardEmployee />} path='/admin/employee' />
+          <Route element={<DashboardEmployee />} path='/admin/employees' />
           <Route element={<CreateEmployee />} path='/admin/employee/create' />
           <Route element={<EditEmployee />} path='/admin/employee/edit/:id' />
           {/* Divisions */}

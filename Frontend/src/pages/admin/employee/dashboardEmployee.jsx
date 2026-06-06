@@ -19,6 +19,14 @@ function DashboardEmployee() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (location.state?.successMessage) {
+            AlertSuccess(location.state.successMessage);
+
+            navigate(location.pathname, { replace: true })
+        }
+    }, [location, navigate])
+
+    useEffect(() => {
         fetch('http://localhost:8080/employees')
             .then(res => res.json())
             .then(data => setEmployees(data));
@@ -79,6 +87,14 @@ function DashboardEmployee() {
             {
                 accessorKey: 'phone',
                 header: 'Phone',
+            },
+            {
+                accessorKey: 'division_name',
+                header: 'Division Name',
+            },
+            {
+                accessorKey: 'position_name',
+                header: 'Position Name',
             },
             {
                 id: 'actions',

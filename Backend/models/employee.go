@@ -7,8 +7,10 @@ type Employee struct {
 	Name      string `json:"fullname"`
 	Phone     string `json:"phone"`
 	Email     string `json:"email"`
-	PositionId     string `json:"position_id"`
-	DivisionId     string `json:"division_id"`
+	PositionId     int16 `json:"position_id"`
+	PositionName string `json:"position_name"`
+	DivisionId     int64 `json:"division_id"`
+	DivisionName string `json:"division_name"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	// Pake * karena nullable

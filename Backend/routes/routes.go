@@ -18,13 +18,13 @@ func SetupRoutes(db *sql.DB) *http.ServeMux {
 
 	// Employee create
 	mux.HandleFunc(
-		"/employees/create",
+		"/employee/create",
 		handlers.CreateEmployee(db),
 	)
 
 	// Employee update
 	mux.HandleFunc(
-		"/employees/update",
+		"/employee/update",
 		handlers.UpdateEmployee(db),
 	)
 

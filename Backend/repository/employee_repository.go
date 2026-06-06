@@ -8,7 +8,26 @@ import (
 
 // Get Employee
 func GetEmployee(db *sql.DB) ([]models.Employee, error) {
-	rows, err := db.Query("SELECT * FROM employee WHERE deleted_at IS NULL")
+	rows, err := db.Query(`
+	SELECT 
+		e.id,
+		e.fullname,
+		e.phone,
+		e.email,
+		e.position_id,
+		p.name,
+		e.division_id,
+		d.name,
+		e.created_at,
+		e.updated_at,
+		e.deleted_at
+	FROM employee e 
+	JOIN divisions
+		d on e.division_id = d.id
+	JOIN positions
+		p on e.position_id = p.id
+	WHERE e.deleted_at IS NULL
+	`)
 
 	// Jika ada error
 	if(err != nil) {
@@ -30,7 +49,9 @@ func GetEmployee(db *sql.DB) ([]models.Employee, error) {
 			&emp.Phone,
 			&emp.Email,
 			&emp.PositionId,
+			&emp.PositionName,
 			&emp.DivisionId,
+			&emp.DivisionName,
 			&emp.CreatedAt,
 			&emp.UpdatedAt,
 			&emp.DeletedAt,
@@ -67,14 +88,25 @@ func CreateEmployee(db *sql.DB, emp models.Employee) error {
 func GetEmployeeById(db *sql.DB, id int) (models.Employee, error) {
 	var emp models.Employee
 
-	err := db.QueryRow(
-		"SELECT id,fullname,email,phone FROM employee WHERE id = ?",
+	err := db.QueryRow(`
+	SELECT 
 		id,
-	).Scan(
+		fullname,
+		phone,
+		email,
+		position_id,
+		division_id
+	FROM employee
+	WHERE id = ?
+	AND deleted_at IS NULL`,
+		id,
+		).Scan(
 		&emp.ID,
 		&emp.Name,
-		&emp.Email,
 		&emp.Phone,
+		&emp.Email,
+		&emp.PositionId,
+		&emp.DivisionId,
 	)
 
 	return emp, err
@@ -87,8 +119,10 @@ func EditEmployee(db *sql.DB, id int, emp models.Employee) error {
 	UPDATE employee 
 	SET
 		fullname = ?,
-		email = ?,
 		phone = ?,
+		email = ?,
+		position_id = ?,
+		division_id = ?,
 		updated_at = ?
 	WHERE id = ?
 	`
@@ -96,8 +130,10 @@ func EditEmployee(db *sql.DB, id int, emp models.Employee) error {
 	_,err := db.Exec(
 		q,
 		emp.Name,
-		emp.Email,
 		emp.Phone,
+		emp.Email,
+		emp.PositionId,
+		emp.DivisionId,
 		now,
 		id,
 	)
