@@ -22,7 +22,7 @@ function AdminLayout() {
                         </a>
                     </li>
                     <li>
-                        <Link to={"/admin/employee"} className="p-5 border-b border-black  text-white flex gap-2 items-center">
+                        <Link to={"/admin/employees"} className="p-5 border-b border-black  text-white flex gap-2 items-center">
                             <Community />
                             <span>Data Karyawan</span>
                         </Link >
